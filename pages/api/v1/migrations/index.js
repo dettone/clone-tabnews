@@ -6,7 +6,7 @@ async function migrations(request, response) {
   const dbClient = await database.getNewClient();
 
   const defaultMigrationsOptions = {
-    dbClientL: dbClient,
+    dbClient: dbClient,
     databaseUrl: process.env.DATABASE_URL,
     dir: join("infra", "migrations"),
     direction: "up",
