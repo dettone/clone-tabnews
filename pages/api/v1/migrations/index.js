@@ -14,6 +14,7 @@ async function migrations(request, response) {
     migrationsTable: "pgmigrations",
     dryRun: true,
   };
+
   if (request.method === "GET") {
     const pendingMigrations = await migrationRunner(defaultMigrationsOptions);
     await dbClient.end();
