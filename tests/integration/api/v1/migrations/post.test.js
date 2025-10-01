@@ -18,7 +18,7 @@ test("POST to api/migrations returns 200 and correct message", async () => {
   expect(responseBody.length).toBeGreaterThan(0);
   expect(responseBody[0].path).toBeDefined();
   expect(responseBody[0].name).toBeDefined();
-  expect(responseBody[0].timestamp);
+  expect(responseBody[0].timestamp).toBeDefined();
 
   const response2 = await fetch("http://localhost:3000/api/v1/migrations", {
     method: "POST",
