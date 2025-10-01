@@ -1,8 +1,8 @@
 {
-    "compilerOptions": {
-        "baseUrl": ".",
-        "paths": {
-            "infra/*": ["infra/*"]
-        }
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "infra/*": ["infra/*"]
     }
+  }
 }
