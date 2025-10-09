@@ -16,6 +16,13 @@ export default function StatusPage() {
   );
 }
 
+function StatusAPI() {
+  const { isLoading, data } = useSWR("/api/v1/status", fetchAPI, {
+    refreshInterval: 2000,
+  });
+  return { isLoading, data };
+}
+
 function DataBaseInfo() {
   const { isLoading, data } = StatusAPI();
 
@@ -47,11 +54,4 @@ function UpdatedAt() {
         : `Last updated at: ${new Date(data.updated_at).toLocaleString()}`}
     </div>
   );
-}
-
-function StatusAPI() {
-  const { isLoading, data } = useSWR("/api/v1/status", fetchAPI, {
-    refreshInterval: 2000,
-  });
-  return { isLoading, data };
 }
