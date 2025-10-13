@@ -6,14 +6,12 @@ import {
 
 function onErrorHandler(error, request, response) {
   if (error instanceof ValidationError) {
-    return response
-      .status(error.statusCode)
-      .json({
-        message: error.message,
-        action: error.action,
-        statusCode: error.statusCode,
-        name: error.name,
-      });
+    return response.status(error.statusCode).json({
+      message: error.message,
+      action: error.action,
+      statusCode: error.statusCode,
+      name: error.name,
+    });
   }
   const publicErrorObject = new InternalServerError({
     statusCode: error.statusCode,
