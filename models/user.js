@@ -1,5 +1,27 @@
 import database from "infra/database.js";
-import { ValidationError } from "infra/erros.js";
+import { NotFoundError, ValidationError } from "infra/erros.js";
+
+async function findOneByUsername(userName) {
+  const userFind = runSelectedQuery(userName);
+
+  return userFind;
+
+  async function runSelectedQuery(userName) {
+    const result = await database.query({
+      text: "SELECT * FROM users WHERE LOWER(username) = LOWER($1) LIMIT 1;",
+      values: [userName],
+    });
+    if (result.rowCount == 0) {
+      throw new NotFoundError({
+        action: "Please choose a different username.",
+        message: "Username already in use.",
+        name: "NotFoundError",
+        statusCode: 404,
+      });
+    }
+    return result.rows[0];
+  }
+}
 
 async function create(userInputValues) {
   await validateUniqueEmail(userInputValues.email);
@@ -55,6 +77,7 @@ async function create(userInputValues) {
 
 const user = {
   create,
+  findOneByUsername,
 };
 
 export default user;
