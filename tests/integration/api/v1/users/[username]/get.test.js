@@ -80,7 +80,7 @@ describe("GET api/v1/user/[username]", () => {
 
     expect(responseBody).toEqual({
       action: "Please choose a different username.",
-      message: "Username already in use.",
+      message: "Username Not Found.",
       name: "NotFoundError",
       statusCode: 404,
     });
