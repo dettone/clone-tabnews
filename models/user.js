@@ -113,7 +113,6 @@ async function validateUniqueEmail(userEmail) {
 
 async function hashPasswordInObject(userInputValues) {
   const hashedPassword = await password.hash(userInputValues.password);
-  console.log(hashedPassword);
   userInputValues.password = hashedPassword;
 }
 
