@@ -2,6 +2,28 @@ import database from "infra/database.js";
 import password from "models/password.js";
 import { NotFoundError, ValidationError } from "infra/erros.js";
 
+async function findOneById(userId) {
+  const userFind = runSelectedQuery(userId);
+
+  return userFind;
+
+  async function runSelectedQuery(userId) {
+    const result = await database.query({
+      text: "SELECT * FROM users WHERE id = $1 LIMIT 1;",
+      values: [userId],
+    });
+    if (result.rowCount == 0) {
+      throw new NotFoundError({
+        action: "Please choose a different id.",
+        message: "Id Not Found.",
+        name: "NotFoundError",
+        statusCode: 404,
+      });
+    }
+    return result.rows[0];
+  }
+}
+
 async function findOneByUsername(userName) {
   const userFind = runSelectedQuery(userName);
 
@@ -142,6 +164,7 @@ const user = {
   update,
   findOneByUsername,
   findOneByEmail,
+  findOneById,
 };
 
 export default user;
