@@ -7,9 +7,25 @@ import migrator from "models/migrator";
 import user from "models/user";
 import session from "models/session";
 
+const emailHttpUrl = `http://${process.env.EMAIL_HTTP_HOST}:${process.env.EMAIL_HTTP_PORT}`;
+
 async function waitForAllServices() {
   await waitForWebServer();
+  await waitForEmailServer();
 
+  async function waitForEmailServer() {
+    return retry(fetchEmailPage, {
+      retries: 100,
+      maxTimeout: 10000,
+    });
+
+    async function fetchEmailPage() {
+      const response = await fetch(emailHttpUrl);
+      if (response.status !== 200) {
+        throw new Error(`Unexpected response status: ${response.status}`);
+      }
+    }
+  }
   async function waitForWebServer() {
     return retry(fetchStatusPage, {
       retries: 100,
@@ -45,11 +61,33 @@ async function createUser(userObject) {
     password: userObject.password || "validpassword",
   });
 }
+
+async function deleteAllEmails() {
+  await fetch(`${emailHttpUrl}/messages`, { method: "DELETE" });
+}
+async function getLastEmail() {
+  const emailListResponse = await fetch(`${emailHttpUrl}/messages`);
+
+  const emailListBody = await emailListResponse.json();
+  const lastEmailItem = emailListBody.pop();
+  const emailTextResponse = await fetch(
+    `${emailHttpUrl}/messages/${lastEmailItem.id}.plain`,
+  );
+  const emailTextBody = await emailTextResponse.text();
+
+  lastEmailItem.text = emailTextBody;
+
+  return lastEmailItem;
+}
+
 const orchestrator = {
   waitForAllServices,
+
   clearDatabase,
   runPendingMigrations,
   createUser,
   createSession,
+  deleteAllEmails,
+  getLastEmail,
 };
 export default orchestrator;
